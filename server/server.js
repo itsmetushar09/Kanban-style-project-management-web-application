@@ -29,6 +29,9 @@ await sequelize.sync({ alter: true });
 app.use("/api/boards", boardRoutes);
 app.use("/api/lists", listRoutes);
 app.use("/api/cards", cardRoutes);
+app.get("/", (req, res) => {
+  res.send("🚀 Backend is live");
+});
 
 
 app.listen(5000, () => console.log("Server running 🚀"));
