@@ -1,7 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 
-import { sequelize } from "./models/index.js";
+// import { sequelize } from "./models/index.js";
+import sequelize from "./config/db.js";
+
+try {
+  await sequelize.authenticate();
+  console.log("DB Connected ✅");
+} catch (err) {
+  console.error("DB Connection Failed ❌", err);
+}
 
 import boardRoutes from "./routes/boardRoutes.js";
 import listRoutes from "./routes/listRoutes.js";
