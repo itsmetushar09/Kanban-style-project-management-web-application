@@ -1,4 +1,4 @@
-import Board from "../models/Board.js";
+import {Board} from "../models/index.js";
 
 // create board
 export const createBoard = async (req, res) => {
@@ -9,6 +9,6 @@ export const createBoard = async (req, res) => {
 
 // get all boards
 export const getBoards = async (req, res) => {
-  const boards = await Board.find();
+  const boards = await Board.findAll();
   res.json(boards);
 };

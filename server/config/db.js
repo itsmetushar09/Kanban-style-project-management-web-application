@@ -1,13 +1,16 @@
-import mongoose from "mongoose";
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/trello");
-    console.log("MongoDB Connected ✅");
-  } catch (error) {
-    console.log("DB Error ❌", error);
-    process.exit(1);
+dotenv.config();
+
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
   }
-};
+);
 
-export default connectDB;
+export default sequelize;

@@ -1,7 +1,11 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const boardSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+const Board = sequelize.define("Board", {
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
-export default mongoose.model("Board", boardSchema);
+export default Board;

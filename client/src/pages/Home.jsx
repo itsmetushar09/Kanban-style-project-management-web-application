@@ -14,7 +14,8 @@ function Home() {
 
         // auto select first board (better UX)
         if (res.data.length > 0) {
-          setSelectedBoard(res.data[0]._id);
+          setSelectedBoard(res.data[0].id);
+          console.log("Boards:", boards);
         }
       } catch (err) {
         console.log("Error fetching boards", err);
@@ -31,10 +32,10 @@ function Home() {
       <div className="p-4 bg-white shadow flex gap-3 overflow-x-auto">
         {boards.map((b) => (
           <button
-            key={b._id}
-            onClick={() => setSelectedBoard(b._id)}
+            key={b.id}
+            onClick={() => setSelectedBoard(b.id)}
             className={`px-4 py-2 rounded-lg font-medium transition ${
-              selectedBoard === b._id
+              selectedBoard === b.id
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 hover:bg-gray-300"
             }`}

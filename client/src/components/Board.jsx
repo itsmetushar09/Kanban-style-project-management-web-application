@@ -5,37 +5,68 @@ import List from "./List";
 
 function Board({ boardId }) {
   const [lists, setLists] = useState([]);
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    if (!boardId) return;
+    const fetchData = async () => {
+      const listRes = await API.get(`/lists/${boardId}`);
+      setLists(listRes.data);
 
-    const fetchLists = async () => {
-      try {
-        const res = await API.get(`/lists/${boardId}`);
-        setLists(res.data);
-      } catch (err) {
-        console.log("Error fetching lists", err);
+      // fetch cards for all lists
+      let allCards = [];
+      for (let l of listRes.data) {
+        const res = await API.get(`/cards/${l.id}`);
+        allCards.push(...res.data);
       }
+      setCards(allCards);
     };
 
-    fetchLists();
+    fetchData();
   }, [boardId]);
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
+  const handleDragEnd = async ({ active, over }) => {
+  if (!over) return;
 
-    if (!over) return;
+  const cardId = Number(active.id);
 
-    console.log("Board ID:", boardId);
-    console.log("Dragged:", active.id);
-    console.log("Dropped on:", over.id);
-  };
+  let listId;
 
+  if (over.data?.current?.listId) {
+    listId = over.data.current.listId;
+  } else {
+    listId = Number(over.id);
+  }
+
+  if (!cardId || !listId) return;
+
+  // 🔥 1. UPDATE UI INSTANTLY (IMPORTANT)
+  setCards((prev) =>
+    prev.map((card) =>
+      card.id === cardId
+        ? { ...card, listId }
+        : card
+    )
+  );
+
+  // 🔥 2. UPDATE BACKEND
+  try {
+    await API.put("/cards/move", {
+      cardId,
+      listId,
+    });
+  } catch (err) {
+    console.error("Move failed:", err);
+  }
+};
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto p-4 items-start">
+      <div className="flex gap-4 p-4 overflow-x-auto">
         {lists.map((list) => (
-          <List key={list._id} list={list} />
+          <List
+            key={list.id}
+            list={list}
+            cards={cards.filter((c) => c.listId === list.id)}
+          />
         ))}
       </div>
     </DndContext>

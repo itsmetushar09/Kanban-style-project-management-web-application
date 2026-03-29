@@ -1,15 +1,10 @@
-import mongoose from "mongoose";
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db.js";
 
-const cardSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  listId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "List",
-  },
-  position: Number,
+const Card = sequelize.define("Card", {
+  title: DataTypes.STRING,
+  listId: DataTypes.INTEGER,
+  position: DataTypes.INTEGER,
 });
-
-const Card = mongoose.model("Card", cardSchema);
 
 export default Card;
